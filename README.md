@@ -10,6 +10,6 @@ Arduino züchtet Salat
 
 
 
-![Picture](https://github.com/MakeMagazinDE/Hydroponik-mit-Arduino/blob/master/hydroponik.jpg)
+![Picture](https://github.com/MakeMagazinDE/Hydroponik-mit-Arduino/blob/main/hydroponik.jpg)
 
 Den vollständigen Artikel mit der Bauanleitung gibt es in der [Make-Ausgabe 2/2021](https://www.heise.de/select/make/2021/2/2023018371963195365) zu lesen. 
