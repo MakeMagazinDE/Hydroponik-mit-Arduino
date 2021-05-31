@@ -44,7 +44,7 @@ unsigned long max_water;                // Dauer Wasser
 unsigned long duration_interval;        // Interval
 bool pumpe_an;                // Pumpe an
 unsigned long dry_time_left;            // vebleibende Zeit bis Start Waesserung
-unsigned long uwet_time_left;            // Vebleibende Zeit bis Ende Waesserung
+unsigned long wet_time_left;            // Vebleibende Zeit bis Ende Waesserung
 char out[3];
 
 
