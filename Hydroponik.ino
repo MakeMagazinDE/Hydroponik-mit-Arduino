@@ -62,7 +62,7 @@ void setup() {
 
 
   // LCD initialisieren
-  lcd.begin(); 
+  lcd.init(); 
   
   // begruessung
   lcd.clear();
