@@ -39,7 +39,10 @@ int Kanal_4 = 13;
 
 // alle variablen hier als unsigned long
 // mit int gab es bei langen Perioden Überläufen
-unsigned long last_water = 0; // Zeitpunkt letzte Waesserung in ms
+unsigned long last_water = 0;           // Zeitpunkt letzte Waesserung in ms
+unsigned long last_display = 0;         // Zeitpunkt letzte Display Aktivierung
+unsigned long duration_display;         // Dauer Display Hintergrundbeleuchtung aktiv 
+bool          backlight_an = false;     // Hilfsmerker Display Hintergrundbeleuchtung ist aktiv (erforderlich da Zustand nicht von lcd abgefragt werden kann)
 unsigned long max_water;                // Dauer Wasser
 unsigned long duration_interval;        // Interval
 bool pumpe_an;                // Pumpe an
@@ -56,6 +59,9 @@ void setup() {
   max_water = 5.0; // sec 
   duration_interval = 1.0; //min
   last_water=millis(); // millis
+  last_display=millis();
+  duration_display = 30; // sec
+  backlight_an = true;
   //duration_water = 0; // sec
   digitalWrite(Kanal_1, LOW);
   pumpe_an = false;
@@ -81,47 +87,61 @@ void setup() {
 
 void loop() {
 
+  // Steuerung Hintergrundbeleuchtung 
+  if (millis() > last_display + duration_display * 1000) {
+    if(backlight_an){
+      lcd.setBacklight(0); // Hinterdrundbeleuchtung aus schalten wenn an
+      backlight_an = false;
+    }
+  } else {
+    if(!backlight_an) {
+      lcd.setBacklight(10); // Hinterdrundbeleuchtung an schalten wenn aus
+      backlight_an = true;
+    }
+  }
+
   Taste = Tastenfeld.getKey();
 
-  //if (Taste) 
-
-  switch (Taste) {
-    case 'A':
-      // Bewässerungsdauer reduzieren  
-      lcd.setBacklight(10); 
-      if (max_water - 1.0 > 0) {
-        max_water = max_water - 1.0;
-      }
-      break;
-    case 'B':
-      // Bewässerungsdauer verlängern
-      lcd.setBacklight(10); 
-      max_water = max_water + 1.0;
-      break;
-    case 'C':
-      // Bewässerungsintervall verkürzen
-      lcd.setBacklight(10); 
-      if (duration_interval - 1.0 > 0) {
-        duration_interval = duration_interval - 1.0;
-      }
-      break;
-    case 'D':
-      // Bewässerungsintervall erhöhen
-      lcd.setBacklight(10); 
-      duration_interval = duration_interval + 1.0;
-      break;
-    case '0':
-      // sofort wässern
-      lcd.setBacklight(10); 
-      last_water = millis() - duration_interval*60000;
-      break;     
-    case '*':
-      // Werte zuruecksetzen
-      max_water = 5.0; // sec 
-      duration_interval = 1; //min
-      break;
-    default:
-      break;
+  //if (Taste) und Backlight
+  if(backlight_an) { //Hintergrund beleuchet
+    if(Taste != NO_KEY)
+      last_display = millis(); // Hintergrundbeleuchtung Timer neu aufziehen 
+    switch (Taste) {
+      case 'A':
+        // Bewässerungsdauer reduzieren  
+        if (max_water - 1.0 > 0) {
+          max_water = max_water - 1.0;
+        }
+        break;
+      case 'B':
+        // Bewässerungsdauer verlängern
+        max_water = max_water + 1.0;
+        break;
+      case 'C':
+        // Bewässerungsintervall verkürzen
+        if (duration_interval - 1.0 > 0) {
+          duration_interval = duration_interval - 1.0;
+        }
+        break;
+      case 'D':
+        // Bewässerungsintervall erhöhen
+        duration_interval = duration_interval + 1.0;
+        break;
+      case '0':
+        // sofort wässern
+        last_water = millis() - duration_interval*60000;
+        break;     
+      case '*':
+        // Werte zuruecksetzen
+        max_water = 5.0; // sec 
+        duration_interval = 1; //min
+        break;
+      default:
+        break;
+    }
+  } else { // Hintergrund dunkel
+    if(Taste != NO_KEY)
+      last_display = millis(); // Hintergrundbeleuchtung aktivieren
   }
 
   //Anzeige aktualisieren
@@ -143,8 +163,6 @@ void loop() {
     // pumpe anschalten
     digitalWrite(Kanal_1, HIGH);
     pumpe_an = true;
-    // Bildschirm ausschalten, muss nicht immer leuchten!
-    lcd.setBacklight(0);
     last_water = millis();
     // Anzeige setzen
     lcd.setCursor(0,1);
