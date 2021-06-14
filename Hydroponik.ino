@@ -139,7 +139,7 @@ void loop() {
   //lcd.print("   ");
     
   //pruefen ob wasser angeschaltet werden soll
-  if (millis() > last_water + duration_interval*60000)  {
+  if (millis() > last_water + duration_interval*60000) {
     // pumpe anschalten
     digitalWrite(Kanal_1, HIGH);
     pumpe_an = true;
@@ -153,16 +153,14 @@ void loop() {
     lcd.print("*");  
     lcd.setCursor(12,1);
     lcd.print("        ");
-  } // if
-  
-  else {
+  } else if (!pumpe_an) {
     // Zeit runterzaehlen
     lcd.setCursor(12,1);
     lcd.print("now: ");
     dry_time_left = duration_interval -(millis()-last_water)/60000;
     sprintf(out,"%3d",dry_time_left);
     lcd.print(out);
-  } // else
+  }
   
         
   if (pumpe_an) {
