@@ -88,7 +88,7 @@ void setup() {
 void loop() {
 
   // Steuerung Hintergrundbeleuchtung 
-  if (millis() > last_display + duration_display * 1000) {
+  if (millis() - last_display > duration_display * 1000) {
     if(backlight_an){
       lcd.setBacklight(0); // Hinterdrundbeleuchtung aus schalten wenn an
       backlight_an = false;
@@ -159,7 +159,7 @@ void loop() {
   //lcd.print("   ");
     
   //pruefen ob wasser angeschaltet werden soll
-  if (millis() > last_water + duration_interval*60000) {
+  if (millis() - last_water > duration_interval*60000) {
     // pumpe anschalten
     digitalWrite(Kanal_1, HIGH);
     pumpe_an = true;
