@@ -182,7 +182,7 @@ void loop() {
   
         
   if (pumpe_an) {
-    if (millis() > (last_water + max_water*1000)) {
+    if (millis() - last_water > max_water * 1000) {
       // Pumpe aus
       digitalWrite(Kanal_1, LOW);
       pumpe_an = false;
